@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Una pregunta para ti 💕</title>
+<style>
+  :root{
+    --pink:#ff6fa5;
+    --pink-deep:#ff3d81;
+    --lav:#c896ff;
+    --cream:#fff5f8;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    min-height:100%;
+    overflow-x:hidden;
+  }
+  body{
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#ffdde6,#ffc1dd 40%,#e8c3ff 100%);
+    position:relative;
+    padding:24px;
+  }
+  @media (prefers-color-scheme: dark){
+    body{ background:linear-gradient(135deg,#3a1030,#5a1840 40%,#3a1450 100%); }
+  }
+
+  .hearts-bg{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:0;
+  }
+  .heart-float{
+    position:absolute;
+    bottom:-10%;
+    font-size:22px;
+    opacity:.55;
+    animation:rise linear infinite;
+  }
+  @keyframes rise{
+    to{ transform:translateY(-115vh) rotate(20deg); opacity:0; }
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    background:rgba(255,255,255,0.85);
+    backdrop-filter:blur(6px);
+    border-radius:28px;
+    box-shadow:0 20px 60px rgba(255,61,129,0.25), 0 4px 12px rgba(0,0,0,0.06);
+    padding:48px 40px;
+    max-width:480px;
+    width:100%;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.6);
+  }
+  @media (prefers-color-scheme: dark){
+    .card{
+      background:rgba(30,14,26,0.85);
+      border-color:rgba(255,255,255,0.08);
+      box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    }
+  }
+
+  .emoji-top{
+    font-size:52px;
+    display:block;
+    margin-bottom:8px;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.15); }
+  }
+
+  h1{
+    font-size:clamp(1.5rem, 5vw, 2.1rem);
+    font-weight:800;
+    color:var(--pink-deep);
+    margin:0 0 10px;
+    line-height:1.25;
+  }
+  @media (prefers-color-scheme: dark){
+    h1{ color:#ff8fbf; }
+  }
+
+  p.sub{
+    font-size:1.05rem;
+    color:#7a4a5c;
+    margin:0 0 32px;
+    line-height:1.5;
+  }
+  @media (prefers-color-scheme: dark){
+    p.sub{ color:#e3b8cc; }
+  }
+
+  .btn-row{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    position:relative;
+    min-height:70px;
+  }
+
+  button{
+    font-family:inherit;
+    font-weight:700;
+    font-size:1.05rem;
+    border:none;
+    border-radius:999px;
+    padding:16px 34px;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+
+  #yes{
+    background:linear-gradient(135deg,var(--pink),var(--pink-deep));
+    color:#fff;
+    box-shadow:0 10px 24px rgba(255,61,129,0.4);
+  }
+  #yes:hover{
+    transform:scale(1.08);
+    box-shadow:0 14px 30px rgba(255,61,129,0.5);
+  }
+
+  #no{
+    background:#fff;
+    color:#b85c7a;
+    border:2px solid #f3c3d4;
+    position:relative;
+  }
+  @media (prefers-color-scheme: dark){
+    #no{ background:#3a1e2c; color:#e3b8cc; border-color:#5a2d42; }
+  }
+
+  .result{
+    display:none;
+    z-index:1;
+    position:relative;
+  }
+  .result.show{
+    display:block;
+    animation:pop .4s ease;
+  }
+  @keyframes pop{
+    0%{ transform:scale(.6); opacity:0; }
+    70%{ transform:scale(1.05); }
+    100%{ transform:scale(1); opacity:1; }
+  }
+  .result h2{
+    font-size:1.6rem;
+    color:var(--pink-deep);
+    margin:0 0 8px;
+  }
+  @media (prefers-color-scheme: dark){
+    .result h2{ color:#ff8fbf; }
+  }
+  .result p{
+    color:#7a4a5c;
+    font-size:1.05rem;
+    margin:0;
+  }
+  @media (prefers-color-scheme: dark){
+    .result p{ color:#e3b8cc; }
+  }
+  .big-emoji{
+    font-size:64px;
+    display:block;
+    margin-bottom:10px;
+    animation:bounce .6s ease infinite alternate;
+  }
+  @keyframes bounce{
+    to{ transform:translateY(-14px); }
+  }
+
+  .confetti-piece{
+    position:fixed;
+    top:-5%;
+    z-index:5;
+    pointer-events:none;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{ transform:translateY(110vh) rotate(360deg); opacity:.2; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsBg"></div>
+
+<div class="card">
+  <span class="emoji-top">💌</span>
+  <h1 id="question">Mi preciosa, ¿salimos este sábado? 🥺💕</h1>
+  <p class="sub" id="subtext">Tengo un plan pensado solo para ti… solo falta tu sí.</p>
+
+  <div class="btn-row" id="btnRow">
+    <button id="yes">Sí, obvio 😍</button>
+    <button id="no">No puedo 🙈</button>
+  </div>
+
+  <div class="result" id="result">
+    <span class="big-emoji">🎉💖</span>
+    <h2 id="resultTitle">¡Sabía que dirías que sí!</h2>
+    <p id="resultText">Este sábado te vengo a buscar. Prepárate para pasarla increíble 💫</p>
+  </div>
+</div>
+
+<script>
+  // --- fondo de corazones flotando ---
+  const heartsBg = document.getElementById('heartsBg');
+  const heartEmojis = ['💕','💖','💗','💓','💞','❤️'];
+  for(let i=0;i<22;i++){
+    const h = document.createElement('span');
+    h.className = 'heart-float';
+    h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = (14 + Math.random()*22) + 'px';
+    h.style.animationDuration = (7 + Math.random()*10) + 's';
+    h.style.animationDelay = (Math.random()*10) + 's';
+    heartsBg.appendChild(h);
+  }
+
+  // --- boton "No" que huye del cursor/touch ---
+  const noBtn = document.getElementById('no');
+  const btnRow = document.getElementById('btnRow');
+  let dodges = 0;
+  const dodgeMsgs = [
+    'No puedo 🙈',
+    '¿Segura? 🥺',
+    'Piénsalo bien...',
+    'Últ. oportunidad 👀',
+    'Ok ya, ríndete 😏'
+  ];
+
+  function dodge(e){
+    e.preventDefault();
+    const rowRect = btnRow.getBoundingClientRect();
+    const maxX = rowRect.width - noBtn.offsetWidth;
+    const maxY = 90;
+    const newX = Math.random()*Math.max(maxX,40) - maxX/2;
+    const newY = Math.random()*maxY - maxY/2;
+    noBtn.style.position = 'relative';
+    noBtn.style.transform = `translate(${newX}px, ${newY}px)`;
+    dodges = Math.min(dodges+1, dodgeMsgs.length-1);
+    noBtn.textContent = dodgeMsgs[dodges];
+  }
+  noBtn.addEventListener('mouseenter', dodge);
+  noBtn.addEventListener('click', dodge);
+  noBtn.addEventListener('touchstart', dodge, {passive:false});
+
+  // --- boton "Si" ---
+  document.getElementById('yes').addEventListener('click', () => {
+    document.getElementById('question').style.display='none';
+    document.getElementById('subtext').style.display='none';
+    btnRow.style.display='none';
+    document.getElementById('result').classList.add('show');
+    confettiBurst();
+  });
+
+  function confettiBurst(){
+    const colors = ['#ff6fa5','#ff3d81','#c896ff','#ffd166','#fff'];
+    for(let i=0;i<60;i++){
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = Math.random()*100 + 'vw';
+      c.style.width = c.style.height = (6+Math.random()*8) + 'px';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.borderRadius = Math.random()>0.5 ? '50%' : '2px';
+      c.style.animationDuration = (2.5 + Math.random()*2) + 's';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(), 5000);
+    }
+  }
+</script>
+</body>
+</html>
